@@ -1,0 +1,252 @@
+openapi: 3.0.3
+info:
+  title: Live Course Control API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: route
+    description: route
+paths:
+  /route:
+    post:
+      tags:
+        - route
+      operationId: createRoute
+      summary: Create a route
+      requestBody:
+        description: Route in binary stream
+        required: true
+        content:
+          application/gpx+xml:
+            schema:
+              type: string
+              format: binary
+          application/xml:
+            schema:
+              type: string
+              format: binary
+      responses:
+        204:
+          description: Route successfully created
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      tags:
+        - route
+      operationId: getRoutes
+      summary: get all routes
+      responses:
+        200:
+          description: Route successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RouteResponse'
+  /route/{routeId}:
+    patch:
+      tags:
+        - route
+      operationId: patchRouteByRouteId
+      summary: patch route by route id
+      parameters:
+        - in: path
+          name: routeId
+          schema:
+            type: string
+            format: uuid
+            example: b47c9d1e-f70a-4bf4-9b5c-b192ba4cb9d1
+          required: true
+          description: route id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRouteRequest'
+      responses:
+        204:
+          description: Route successfully patched
+    delete:
+      tags:
+        - route
+      operationId: deleteRouteByRouteId
+      summary: delete route by route id
+      parameters:
+        - in: path
+          name: routeId
+          schema:
+            type: string
+            format: uuid
+            example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
+          required: true
+          description: route id
+      responses:
+        204:
+          description: Route successfully deleted
+  /route-point/{routeId}:
+    get:
+      tags:
+        - route
+      operationId: getRoutePointByRouteId
+      summary: get route points by route id
+      parameters:
+        - in: path
+          name: routeId
+          schema:
+            type: string
+            format: uuid
+            example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
+          required: true
+          description: route id
+      responses:
+        200:
+          description: Route points successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoutePointResponse'
+  /route-point/center/{routeId}:
+    get:
+      tags:
+        - route
+      operationId: getRoutePointCenterByRouteId
+      summary: get route point center by route id
+      parameters:
+        - in: path
+          name: routeId
+          schema:
+            type: string
+            format: uuid
+            example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
+          required: true
+          description: route id
+      responses:
+        200:
+          description: Route point center successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutePointResponse'
+components:
+  schemas:
+    RouteResponse:
+      type: object
+      required:
+        - id
+        - name
+        - elevationGain
+        - estimatedAverageSpeed
+        - distanceInMeters
+        - durationInMinutes
+        - estimatedStartTime
+        - estimatedEndTime
+        - pauseInMinutes
+        - createDate
+        - lastModifiedDate
+        - startTime
+        - averageSpeed
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 1c11de37-31f0-4216-bf1f-ad9fdca6e6eb
+        name:
+          type: string
+          example: route-name
+        elevationGain:
+          type: integer
+          example: 1200
+        estimatedAverageSpeed:
+          type: number
+          format: double
+          example: 28.5
+        distanceInMeters:
+          type: integer
+          example: 5000
+        durationInMinutes:
+          type: integer
+          example: 124
+        estimatedStartTime:
+          type: string
+          format: date-time
+        estimatedEndTime:
+          type: string
+          format: date-time
+        pauseInMinutes:
+          type: integer
+          example: 30
+        createDate:
+          type: string
+          format: date-time
+        lastModifiedDate:
+          type: string
+          format: date-time
+        startTime:
+          type: string
+          format: date-time
+        averageSpeed:
+          type: number
+          format: double
+          example: 24.6
+    PatchRouteRequest:
+      type: object
+      properties:
+        estimatedAverageSpeed:
+          type: number
+          format: double
+          example: 28.5
+        estimatedStartTime:
+          type: string
+          format: date-time
+        pauseInMinutes:
+          type: integer
+          example: 30
+    RoutePointResponse:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - altitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          example: 45.5
+        longitude:
+          type: number
+          format: double
+          example: 49.898
+        altitude:
+          type: number
+          format: double
+          example: 90.2
+    ProblemDetailResponse:
+      required:
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          description: The HTTP status code generated by the origin server for this occurrence of the problem
+          example: 400
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem
+          example: /route
