@@ -14,6 +14,10 @@ permissions:
   packages: write
   id-token: write
 
+env:
+  AWS_ROLE: 'arn:aws:iam::896918338968:role/GitHubActionsHeadOfTpFrontend'
+  VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -32,6 +36,24 @@ jobs:
           rm -rf dist
           npm install
           npm run build
+
+      - name: Import secret
+        id: import-secret
+        uses: hashicorp/vault-action@v3
+        with:
+          url: ${{ env.VAULT_ADDR }}
+          role: github-actions-secret
+          method: jwt
+          path: github-actions-secret
+          secrets: |
+            github-actions-secret/data/secret CLOUDFLARE_API_KEY | CLOUDFLARE_API_KEY ;
+            github-actions-secret/data/secret CLOUDFLARE_EMAIL | CLOUDFLARE_EMAIL ;    
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@ececac1a45f3b08a01d2dd070d28d111c5fe6722 # v4.1.0
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          aws-region: eu-west-1
 
       - name: Install Semantic Release and plugins
         run: |
@@ -58,3 +80,21 @@ jobs:
           git checkout develop
           git merge --ff-only origin/main
           git push origin develop
+
+      - name: Terraform init
+        if: github.ref == 'refs/heads/develop'
+        id: tf-init
+        run: terraform init
+        working-directory: infra/prod
+
+      - name: Terraform plan
+        if: github.ref == 'refs/heads/develop'
+        id: tf-plan
+        run: terraform plan
+        working-directory: infra/prod
+
+      - name: Terraform apply
+        if: github.ref == 'refs/heads/develop'
+        id: tf-apply
+        run: terraform apply -auto-approve
+        working-directory: infra/prod
