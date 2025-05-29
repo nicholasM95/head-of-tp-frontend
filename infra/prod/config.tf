@@ -3,12 +3,12 @@ terraform {
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "5.1.0"
+      version = " 5.5.0"
     }
 
     aws = {
       source  = "hashicorp/aws"
-      version = "5.89.0"
+      version = "5.98.0"
     }
   }
 
