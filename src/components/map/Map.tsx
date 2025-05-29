@@ -74,6 +74,7 @@ export default function Map({ locations, routePointsMap }: { locations: Location
             center={center as L.LatLngExpression}
             zoom={11}
             scrollWheelZoom={true}
+            zoomControl={false}
             style={{ height: '100vh', width: '100%' }}>
 
             <TileLayer
