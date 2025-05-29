@@ -55,6 +55,14 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: eu-west-1
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+
+      - name: Terraform Format Check
+        id: fmt-check
+        run: terraform fmt -check
+        working-directory: infra
+
       - name: Install Semantic Release and plugins
         run: |
           npm install semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/github
