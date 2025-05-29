@@ -2,7 +2,7 @@ import { Configuration, RouteApi, type RoutePointResponse, type RouteResponse, t
 
 
 const apiConfig = new Configuration({
-    basePath: "http://localhost:8080",
+    basePath: "https://api.headoftp.com",
 });
 
 const routeApi = new RouteApi(apiConfig);
