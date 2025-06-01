@@ -2,7 +2,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import RouteDetails from "../../components/route-details";
 
 import { useEffect, useState } from "react";
-import { createRoute, getAllRoutes, patchRouteByRouteId } from "../../services/route.service.ts";
+import { createRoute, deleteRoute, getAllRoutes, patchRouteByRouteId } from "../../services/route.service.ts";
 import type { RouteResponse } from "../../lib/route";
 import { createParticipant, getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
 import type { CreateParticipantRequest, ParticipantResponse } from "../../lib/participant";
@@ -16,6 +16,7 @@ function DashboardPage() {
     const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
 
     const [loadingCreateRoute, setLoadingCreateRoute] = useState(false);
+    const [loadingDeleteRoute, setLoadingDeleteRoute] = useState(false);
 
 
     async function fetchRoutes() {
@@ -58,6 +59,19 @@ function DashboardPage() {
             )
         );
         patchParticipantById(updatedParticipant.id, updatedParticipant);
+    }
+
+    function handleRouteDelete(id: string) {
+        setLoadingDeleteRoute(true);
+        deleteRoute(id)
+            .then(() => getAllRoutes())
+            .then(updatedRoutes => setRoutes(updatedRoutes))
+            .catch(error => {
+                console.error('Failed to delete route or fetch routes:', error);
+            })
+            .finally(() => {
+                setLoadingDeleteRoute(false);
+            });
     }
 
     function handleOnCreateParticipant(createParticipantRequest: CreateParticipantRequest) {
@@ -110,6 +124,32 @@ function DashboardPage() {
                 </div>
             )}
 
+            {loadingDeleteRoute && (
+                <div className="flex items-center justify-center mt-4">
+                    <svg
+                        className="animate-spin h-6 w-6 text-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                        ></circle>
+                        <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                    </svg>
+                    <span className="ml-2 text-black">Deleting route...</span>
+                </div>
+            )}
+
             <div className="flex h-screen w-full justify-center px-4 pt-4">
                 <div className="w-full max-w-md">
                     <TabGroup>
@@ -139,6 +179,7 @@ function DashboardPage() {
                                                 key={route.id}
                                                 route={route}
                                                 onRouteChange={handleRouteUpdate}
+                                                onRouteDelete={handleRouteDelete}
                                             />
                                         ))}
                                     </div>

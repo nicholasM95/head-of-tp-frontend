@@ -33,3 +33,11 @@ export const createRoute = async (
     });
 };
 
+export const deleteRoute = async (
+    routeId: string
+): Promise<void> => {
+    return await routeApi.deleteRouteByRouteId({
+        routeId
+    });
+};
+
