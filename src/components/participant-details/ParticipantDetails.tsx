@@ -1,13 +1,15 @@
 import { useState } from "react";
 import type { ParticipantResponse, RoleType, VehicleType } from "../../lib/participant";
 import ParticipantEdit from "../participant-edit";
+import ParticipantDelete from "../participant-delete";
 
 type ParticipantDetailsProps = {
     participant: ParticipantResponse;
     onParticipantChange: (updatedParticipant: ParticipantResponse) => void;
+    onParticipantDelete: (id: string) => void;
 };
 
-export default function ParticipantDetails({ participant: initialParticipant, onParticipantChange }: ParticipantDetailsProps) {
+export default function ParticipantDetails({ participant: initialParticipant, onParticipantChange, onParticipantDelete }: ParticipantDetailsProps) {
     const [participant, setParticipant] = useState<ParticipantResponse>(initialParticipant);
 
     function handleParticipantUpdate(updated: { name: string; deviceId: string; vehicle: VehicleType; role: RoleType }) {
@@ -20,6 +22,10 @@ export default function ParticipantDetails({ participant: initialParticipant, on
         };
         setParticipant(newParticipant);
         onParticipantChange(newParticipant);
+    }
+
+    function handleParticipantDelete(deleted: { participantId: string; }) {
+        onParticipantDelete(deleted.participantId);
     }
 
     return (
@@ -40,6 +46,7 @@ export default function ParticipantDetails({ participant: initialParticipant, on
                         </div>
                     </div>
                     <ParticipantEdit participant={participant} onSave={handleParticipantUpdate}></ParticipantEdit>
+                    <ParticipantDelete participant={participant} onDelete={handleParticipantDelete}></ParticipantDelete>
                 </div>
             </div>
         </div>

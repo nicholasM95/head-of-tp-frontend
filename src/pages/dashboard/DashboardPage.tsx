@@ -4,7 +4,7 @@ import RouteDetails from "../../components/route-details";
 import { useEffect, useState } from "react";
 import { createRoute, deleteRoute, getAllRoutes, patchRouteByRouteId } from "../../services/route.service.ts";
 import type { RouteResponse } from "../../lib/route";
-import { createParticipant, getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
+import { createParticipant, deleteParticipant, getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
 import type { CreateParticipantRequest, ParticipantResponse } from "../../lib/participant";
 import ParticipantDetails from "../../components/participant-details";
 import ParticipantCreate from "../../components/participant-create";
@@ -72,6 +72,15 @@ function DashboardPage() {
             .finally(() => {
                 setLoadingDeleteRoute(false);
             });
+    }
+
+    function handleParticipantDelete(id: string) {
+        deleteParticipant(id)
+            .then(() => getAllParticipants())
+            .then(updatedParticipants => setParticipants(updatedParticipants))
+            .catch(error => {
+                console.error('Failed to delete participant or fetch participants:', error);
+            })
     }
 
     function handleOnCreateParticipant(createParticipantRequest: CreateParticipantRequest) {
@@ -196,6 +205,7 @@ function DashboardPage() {
                                                 key={participant.id}
                                                 participant={participant}
                                                 onParticipantChange={handleParticipantUpdate}
+                                                onParticipantDelete={handleParticipantDelete}
                                             />
                                         ))}
                                     </div>

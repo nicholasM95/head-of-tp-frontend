@@ -33,3 +33,11 @@ export const createParticipant = async (
         createParticipantRequest
     });
 };
+
+export const deleteParticipant = async (
+    id: string
+): Promise<void> => {
+    return await participantApi.deleteParticipantById({
+        id
+    });
+};
