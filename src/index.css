@@ -8,3 +8,7 @@
 .leaflet-pane {
     z-index: 0 !important;
 }
+
+body {
+    background-color: var(--color-gray-50);
+}

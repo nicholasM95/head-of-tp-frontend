@@ -1,24 +1,19 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 
-import {
-    PencilIcon
-} from '@heroicons/react/16/solid'
-
 import { useState } from 'react'
-import type { ParticipantResponse, RoleType, VehicleType } from "../../lib/participant";
+import type { RoleType, VehicleType } from "../../lib/participant";
 
-type ParticipantEditProps = {
-    participant: ParticipantResponse;
-    onSave: (data: { name: string; deviceId: string, vehicle: VehicleType, role: RoleType }) => void;
+type ParticipantCreateProps = {
+    onCreate: (data: { name: string; deviceId: string, vehicle: VehicleType, role: RoleType }) => void;
 }
 
-export default function ParticipantEdit({ participant, onSave }: ParticipantEditProps) {
+export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) {
     const [isOpen, setIsOpen] = useState(false)
 
-    const [name, setName] = useState<string | ''>(participant.name ?? '');
-    const [deviceId, setDeviceId] = useState<string | ''>(participant.deviceId ?? '');
-    const [vehicle, setVehicle] = useState<VehicleType>(participant.vehicle);
-    const [role, setRole] = useState<RoleType>(participant.role);
+    const [name, setName] = useState<string>();
+    const [deviceId, setDeviceId] = useState<string>();
+    const [vehicle, setVehicle] = useState<VehicleType>('BIKE');
+    const [role, setRole] = useState<RoleType>('RIDER');
 
     function open() {
         setIsOpen(true)
@@ -31,8 +26,13 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         close();
-        
-        onSave({
+
+        if (!name || !deviceId || !vehicle || !role) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        onCreate({
             name: name,
             deviceId: deviceId,
             vehicle: vehicle,
@@ -46,9 +46,8 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
         <>
             <Button
                 onClick={open}
-                className="rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white"
-            >
-                <PencilIcon className="h-4 w-4 fill-black" />
+                className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700">
+                Add Team Member
             </Button>
 
             <Dialog
@@ -80,7 +79,6 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
                                     placeholder="Enter name"
                                     required
-                                    value={name}
                                     onChange={e => setName(e.target.value)}
                                 />
                             </div>
@@ -98,7 +96,6 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
                                     placeholder="Enter device id"
                                     required
-                                    value={deviceId}
                                     onChange={e => setDeviceId(e.target.value)}
                                 />
                             </div>
@@ -146,7 +143,7 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
                                     type="submit"
                                     className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"
                                 >
-                                    Save
+                                    Create Team Member
                                 </Button>
                             </div>
                         </form>

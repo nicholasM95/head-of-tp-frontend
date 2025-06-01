@@ -4,34 +4,38 @@ import RouteDetails from "../../components/route-details";
 import { useEffect, useState } from "react";
 import { getAllRoutes, patchRouteByRouteId } from "../../services/route.service.ts";
 import type { RouteResponse } from "../../lib/route";
-import { getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
-import type { ParticipantResponse } from "../../lib/participant";
+import { createParticipant, getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
+import type { CreateParticipantRequest, ParticipantResponse } from "../../lib/participant";
 import ParticipantDetails from "../../components/participant-details";
+import ParticipantCreate from "../../components/participant-create";
 
 function DashboardPage() {
 
     const [routes, setRoutes] = useState<RouteResponse[]>([]);
     const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
 
+    async function fetchRoutes() {
+        return getAllRoutes();
+    }
+
+    async function fetchParticipants() {
+        return getAllParticipants();
+    }
+
     useEffect(() => {
-        const fetchRoutes = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getAllRoutes();
-                setRoutes(data);
+                const [routesData, participantsData] = await Promise.all([
+                    fetchRoutes(),
+                    fetchParticipants(),
+                ]);
+                setRoutes(routesData);
+                setParticipants(participantsData);
             } catch (err) {
-                console.error("Can't get routes:", err);
+                console.error('Failed to fetch data:', err);
             }
         };
-        const fetchParticipants = async () => {
-            try {
-                const data = await getAllParticipants();
-                setParticipants(data);
-            } catch (err) {
-                console.error("Can't get participants:", err);
-            }
-        };
-        fetchRoutes();
-        fetchParticipants();
+        fetchData();
     }, []);
 
     function handleRouteUpdate(updatedRoute: RouteResponse) {
@@ -52,6 +56,14 @@ function DashboardPage() {
         patchParticipantById(updatedParticipant.id, updatedParticipant);
     }
 
+    function handleOnCreateParticipant(createParticipantRequest: CreateParticipantRequest) {
+        createParticipant(createParticipantRequest)
+            .then(() => getAllParticipants())
+            .then(updatedParticipants => setParticipants(updatedParticipants))
+            .catch(error => {
+                console.error('Failed to create participant or fetch participants:', error);
+            });
+    }
 
     return (
         <div className="flex h-screen w-full justify-center px-4 pt-4">
@@ -93,9 +105,7 @@ function DashboardPage() {
                         <TabPanel key="team">
                             <div className=" p-4">
                                 <div className="max-w-md mx-auto space-y-4">
-                                    <Button className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700">
-                                        Add Team Member
-                                    </Button>
+                                    <ParticipantCreate onCreate={handleOnCreateParticipant}></ParticipantCreate>
                                 </div>
                                 <div className="max-w-md mx-auto space-y-4 mt-8">
                                     {participants.map((participant) => (

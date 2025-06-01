@@ -1,4 +1,10 @@
-import { Configuration, ParticipantApi, type ParticipantResponse, type PatchParticipantRequest } from "../lib/participant";
+import {
+    Configuration,
+    type CreateParticipantRequest,
+    ParticipantApi,
+    type ParticipantResponse,
+    type PatchParticipantRequest
+} from "../lib/participant";
 
 const apiConfig = new Configuration({
     basePath: "https://api.headoftp.com",
@@ -17,5 +23,13 @@ export const patchParticipantById = async (
     return await participantApi.patchParticipantById({
         id,
         patchParticipantRequest
+    });
+};
+
+export const createParticipant = async (
+    createParticipantRequest: CreateParticipantRequest
+): Promise<void> => {
+    return await participantApi.createParticipant({
+        createParticipantRequest
     });
 };
