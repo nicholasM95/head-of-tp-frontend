@@ -63,7 +63,7 @@ export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) 
                         className="w-full max-w-md rounded-xl bg-gray-800 p-6 backdrop-blur-2xl shadow-lg duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
                     >
                         <DialogTitle as="h3" className="text-lg font-medium text-white">
-                            {name}
+                            Create Team Member
                         </DialogTitle>
                         <form className="mt-4 space-y-6" onSubmit={ handleSubmit }>
                             <div>

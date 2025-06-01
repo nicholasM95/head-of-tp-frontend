@@ -25,3 +25,11 @@ export const patchRouteByRouteId = async (
     });
 };
 
+export const createRoute = async (
+    body: File
+): Promise<void> => {
+    return await routeApi.createRoute({
+        body
+    });
+};
+
