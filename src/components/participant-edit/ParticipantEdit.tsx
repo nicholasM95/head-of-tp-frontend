@@ -1,36 +1,24 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import type { RouteResponse } from "../../lib/route";
 
 import {
     PencilIcon
 } from '@heroicons/react/16/solid'
 
 import { useState } from 'react'
+import type { ParticipantResponse, RoleType, VehicleType } from "../../lib/participant";
 
-type RouteEditProps = {
-    route: RouteResponse;
-    onSave: (data: { estimatedStartTime: string; estimatedAverageSpeed: number, pauseInMinutes: number }) => void;
+type ParticipantEditProps = {
+    participant: ParticipantResponse;
+    onSave: (data: { name: string; deviceId: string, vehicle: VehicleType, role: RoleType }) => void;
 }
 
-export default function RouteEdit({ route, onSave }: RouteEditProps) {
+export default function ParticipantEdit({ participant, onSave }: ParticipantEditProps) {
     const [isOpen, setIsOpen] = useState(false)
 
-    const [estimatedStartDate, setEstimatedStartDate] = useState(() => {
-        const date = new Date(route.estimatedStartTime);
-        return toLocalISOString(date);
-    })
-
-    const [estimatedSpeed, setEstimatedSpeed] = useState<number | ''>(route.estimatedAverageSpeed ?? '');
-    const [pauseInMinutes, setPauseInMinutes] = useState<number | ''>(route.pauseInMinutes ?? '');
-
-    function toLocalISOString(date: Date) {
-        const pad = (n: number) => n.toString().padStart(2, '0');
-        return date.getFullYear() + '-' +
-            pad(date.getMonth() + 1) + '-' +
-            pad(date.getDate()) + 'T' +
-            pad(date.getHours()) + ':' +
-            pad(date.getMinutes());
-    }
+    const [name, setName] = useState<string | ''>(participant.name ?? '');
+    const [deviceId, setDeviceId] = useState<string | ''>(participant.deviceId ?? '');
+    const [vehicle, setVehicle] = useState<VehicleType>(participant.vehicle);
+    const [role, setRole] = useState<RoleType>(participant.role);
 
     function open() {
         setIsOpen(true)
@@ -43,14 +31,12 @@ export default function RouteEdit({ route, onSave }: RouteEditProps) {
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         close();
-
-        if (!estimatedSpeed) return;
-        if (!pauseInMinutes && pauseInMinutes != 0) return;
         
         onSave({
-            estimatedStartTime: estimatedStartDate,
-            estimatedAverageSpeed: estimatedSpeed,
-            pauseInMinutes: pauseInMinutes
+            name: name,
+            deviceId: deviceId,
+            vehicle: vehicle,
+            role: role
         });
 
         close();
@@ -78,71 +64,81 @@ export default function RouteEdit({ route, onSave }: RouteEditProps) {
                         className="w-full max-w-md rounded-xl bg-gray-800 p-6 backdrop-blur-2xl shadow-lg duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
                     >
                         <DialogTitle as="h3" className="text-lg font-medium text-white">
-                            {route.name}
+                            {name}
                         </DialogTitle>
                         <form className="mt-4 space-y-6" onSubmit={ handleSubmit }>
                             <div>
                                 <label
-                                    htmlFor="estimatedStartDate"
+                                    htmlFor="name"
                                     className="block text-sm font-semibold text-white"
                                 >
-                                    Estimated Start Date
+                                    Name
                                 </label>
                                 <input
-                                    id="estimatedStartDate"
-                                    type="datetime-local"
+                                    id="name"
+                                    type="input"
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
                                     placeholder="Select date and time"
                                     required
-                                    value={estimatedStartDate}
-                                    onChange={e => setEstimatedStartDate(e.target.value)}
+                                    value={name}
+                                    onChange={e => setName(e.target.value)}
                                 />
                             </div>
 
                             <div>
                                 <label
-                                    htmlFor="estimatedSpeed"
+                                    htmlFor="deviceId"
                                     className="block text-sm font-semibold text-white"
                                 >
-                                    Estimated Speed (km/h)
+                                    Device Id
                                 </label>
                                 <input
-                                    id="estimatedSpeed"
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
+                                    id="deviceId"
+                                    type="input"
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
                                     placeholder="Enter estimated speed"
                                     required
-                                    value={estimatedSpeed}
-                                    onChange={e => {
-                                        const value = e.target.value;
-                                        setEstimatedSpeed(value === '' ? '' : parseFloat(value));
-                                    }}
+                                    value={deviceId}
+                                    onChange={e => setDeviceId(e.target.value)}
                                 />
                             </div>
 
                             <div>
                                 <label
-                                    htmlFor="pauseInMinutes"
+                                    htmlFor="vehicle"
                                     className="block text-sm font-semibold text-white"
                                 >
-                                    Pause (minutes)
+                                    Vehicle
                                 </label>
-                                <input
-                                    id="pauseInMinutes"
-                                    type="number"
-                                    step="1"
-                                    min="0"
+                                <select
+                                    id="vehicle"
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-                                    placeholder="Enter pause"
                                     required
-                                    value={pauseInMinutes}
-                                    onChange={e => {
-                                        const value = e.target.value;
-                                        setPauseInMinutes(value === '' ? '' : parseFloat(value));
-                                    }}
-                                />
+                                    value={vehicle}
+                                    onChange={e => setVehicle(e.target.value as VehicleType)}
+                                >
+                                    <option value="BIKE">BIKE</option>
+                                    <option value="CAR">CAR</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="role"
+                                    className="block text-sm font-semibold text-white"
+                                >
+                                    Role
+                                </label>
+                                <select
+                                    id="role"
+                                    className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                                    required
+                                    value={role}
+                                    onChange={e => setRole(e.target.value as RoleType)}
+                                >
+                                    <option value="RIDER">RIDER</option>
+                                    <option value="TP">TP</option>
+                                </select>
                             </div>
 
                             <div className="flex justify-end">
