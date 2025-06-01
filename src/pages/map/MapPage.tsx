@@ -70,7 +70,7 @@ function MapPage() {
 
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/route-websocket');
+        const socket = new SockJS('https://api.headoftp.com/route-websocket');
         const stompClient = new Client({
             webSocketFactory: () => socket,
             reconnectDelay: 5000,

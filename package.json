@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-api": "npx openapi-generator-cli generate -i ./route-openapi-spec.yaml -g typescript-fetch -o src/lib/route"
+    "generate-api-route": "npx openapi-generator-cli generate -i ./route-openapi-spec.yaml -g typescript-fetch -o src/lib/route",
+    "generate-api-participant": "npx openapi-generator-cli generate -i ./participant-openapi-spec.yaml -g typescript-fetch -o src/lib/participant"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",

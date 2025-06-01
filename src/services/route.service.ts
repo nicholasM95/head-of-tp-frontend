@@ -2,7 +2,7 @@ import { Configuration, RouteApi, type RoutePointResponse, type RouteResponse, t
 
 
 const apiConfig = new Configuration({
-    basePath: "http://localhost:8080",
+    basePath: "https://api.headoftp.com",
 });
 
 const routeApi = new RouteApi(apiConfig);
@@ -22,6 +22,22 @@ export const patchRouteByRouteId = async (
     return await routeApi.patchRouteByRouteId({
         routeId,
         patchRouteRequest
+    });
+};
+
+export const createRoute = async (
+    body: File
+): Promise<void> => {
+    return await routeApi.createRoute({
+        body
+    });
+};
+
+export const deleteRoute = async (
+    routeId: string
+): Promise<void> => {
+    return await routeApi.deleteRouteByRouteId({
+        routeId
     });
 };
 

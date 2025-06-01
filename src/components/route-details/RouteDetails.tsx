@@ -1,6 +1,7 @@
 import { useState } from "react";
 import RouteEdit from "../route-edit";
 import type { RouteResponse } from "../../lib/route";
+import RouteDelete from "../route-delete";
 
 function formatMinutes(totalMinutes: number): string {
     const hours = Math.floor(totalMinutes / 60);
@@ -9,15 +10,16 @@ function formatMinutes(totalMinutes: number): string {
 }
 
 function isValidDate(d: Date): boolean {
-    return d.getFullYear() === 1970 ? false : true;
+    return d.getFullYear() !== 1970;
 }
 
 type RouteDetailsProps = {
     route: RouteResponse;
     onRouteChange: (updatedRoute: RouteResponse) => void;
+    onRouteDelete: (id: string) => void;
 };
 
-export default function RouteDetails({ route: initialRoute, onRouteChange }: RouteDetailsProps) {
+export default function RouteDetails({ route: initialRoute, onRouteChange, onRouteDelete }: RouteDetailsProps) {
     const [route, setRoute] = useState<RouteResponse>(initialRoute);
 
     function handleRouteUpdate(updated: { estimatedStartTime: string; estimatedAverageSpeed: number; pauseInMinutes: number }) {
@@ -29,6 +31,10 @@ export default function RouteDetails({ route: initialRoute, onRouteChange }: Rou
         };
         setRoute(newRoute);
         onRouteChange(newRoute);
+    }
+
+    function handleRouteDelete(deleted: { routeId: string; }) {
+        onRouteDelete(deleted.routeId);
     }
 
     return (
@@ -61,6 +67,7 @@ export default function RouteDetails({ route: initialRoute, onRouteChange }: Rou
                         </div>
                     </div>
                     <RouteEdit route={route} onSave={handleRouteUpdate}></RouteEdit>
+                    <RouteDelete route={route} onDelete={handleRouteDelete}></RouteDelete>
                 </div>
             </div>
         </div>
