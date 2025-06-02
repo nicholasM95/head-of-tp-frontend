@@ -57,8 +57,10 @@ export default function ParticipantDetails({ participant: initialParticipant, on
                             })}</div>
                         </div>
                     </div>
-                    <ParticipantEdit participant={participant} onSave={handleParticipantUpdate}></ParticipantEdit>
-                    <ParticipantDelete participant={participant} onDelete={handleParticipantDelete}></ParticipantDelete>
+                    <div className="flex flex-col space-y-4">
+                        <ParticipantEdit participant={participant} onSave={handleParticipantUpdate}></ParticipantEdit>
+                        <ParticipantDelete participant={participant} onDelete={handleParticipantDelete}></ParticipantDelete>
+                    </div>
                 </div>
             </div>
         </div>

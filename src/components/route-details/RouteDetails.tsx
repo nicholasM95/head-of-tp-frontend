@@ -96,8 +96,10 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
 
                         </div>
                     </div>
-                    <RouteEdit route={route} onSave={handleRouteUpdate}></RouteEdit>
-                    <RouteDelete route={route} onDelete={handleRouteDelete}></RouteDelete>
+                    <div className="flex flex-col space-y-4">
+                        <RouteEdit route={route} onSave={handleRouteUpdate}></RouteEdit>
+                        <RouteDelete route={route} onDelete={handleRouteDelete}></RouteDelete>
+                    </div>
                 </div>
             </div>
         </div>
