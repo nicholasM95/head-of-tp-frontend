@@ -178,7 +178,7 @@ function DashboardPage() {
                         </TabList>
                         <TabPanels className="mt-3">
                             <TabPanel key="routes">
-                                <div className=" p-4">
+                                <div className="">
                                     <div className="max-w-md mx-auto space-y-4">
                                         <RouteCreate onCreate={handleOnCreateRoute}></RouteCreate>
                                     </div>
@@ -195,7 +195,7 @@ function DashboardPage() {
                                 </div>
                             </TabPanel>
                             <TabPanel key="team">
-                                <div className=" p-4">
+                                <div className="">
                                     <div className="max-w-md mx-auto space-y-4">
                                         <ParticipantCreate onCreate={handleOnCreateParticipant}></ParticipantCreate>
                                     </div>

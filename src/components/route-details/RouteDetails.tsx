@@ -46,7 +46,13 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
                         <div className="mt-2 text-sm text-gray-600 space-y-1">
                             <div><strong>Distance:</strong> {route.distanceInMeters / 1000} km</div>
                             <div><strong>Elevation:</strong> {route.elevationGain} m</div>
-                            <div><strong>Estimated departure:</strong> {route.estimatedStartTime.toLocaleString()}</div>
+                            <div><strong>Estimated departure:</strong> {route.estimatedStartTime.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}</div>
                             <div><strong>Estimated speed:</strong> {route.estimatedAverageSpeed} km/h</div>
                             <div><strong>Estimated time:</strong> {formatMinutes(route.durationInMinutes)}</div>
 
@@ -55,14 +61,38 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
                             <div><strong>Average speed:</strong> {route.averageSpeed} km/h</div>
                             <div><strong>Pause:</strong> {route.pauseInMinutes} min</div>
                             {isValidDate(route.startTime) && (
-                                <div><strong>Actual departure:</strong> {route.startTime.toLocaleString()}</div>
+                                <div><strong>Actual departure:</strong> {route.startTime.toLocaleString(undefined, {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                })}</div>
                             )}
-                            <div><strong>Estimated arrival:</strong> {route.estimatedEndTime.toLocaleString()}</div>
+                            <div><strong>Estimated arrival:</strong> {route.estimatedEndTime.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}</div>
 
                             <hr className="my-4 border-t border-gray-200" />
 
-                            <div><strong>Last modified date:</strong> {route.lastModifiedDate.toLocaleString()}</div>
-                            <div><strong>Create date:</strong> {route.createDate.toLocaleString()}</div>
+                            <div><strong>Last modified date:</strong> {route.lastModifiedDate.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}</div>
+                            <div><strong>Create date:</strong> {route.createDate.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}</div>
 
                         </div>
                     </div>
