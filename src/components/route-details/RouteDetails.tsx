@@ -2,6 +2,7 @@ import { useState } from "react";
 import RouteEdit from "../route-edit";
 import type { RouteResponse } from "../../lib/route";
 import RouteDelete from "../route-delete";
+import { Button } from "@headlessui/react";
 
 function formatMinutes(totalMinutes: number): string {
     const hours = Math.floor(totalMinutes / 60);
@@ -21,6 +22,8 @@ type RouteDetailsProps = {
 
 export default function RouteDetails({ route: initialRoute, onRouteChange, onRouteDelete }: RouteDetailsProps) {
     const [route, setRoute] = useState<RouteResponse>(initialRoute);
+    const [kilometer, setKilometers] = useState(1);
+
 
     function handleRouteUpdate(updated: { estimatedStartTime: string; estimatedAverageSpeed: number; pauseInMinutes: number }) {
         const newRoute = {
@@ -93,6 +96,33 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
                                 month: '2-digit',
                                 year: 'numeric'
                             })}</div>
+
+                            <hr className="my-4 border-t border-gray-200" />
+
+                            <div className="mb-4">
+                                <label htmlFor="kilometer" className="block text-sm font-medium text-gray-600 mb-1">
+                                    <strong>Navigate to:</strong>
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        id="kilometer"
+                                        type="number"
+                                        step="1"
+                                        min="0"
+                                        className="w-32 rounded-md border border-white/30 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                                        required
+                                        value={kilometer}
+                                        onChange={e => setKilometers(Number(e.target.value))}
+                                        placeholder="Bijv. 40"
+                                    />
+                                    <Button
+                                        onClick={() => window.open(`https://api.headoftp.com/route/${route.id}/navigate?meters=${kilometer * 1000}`, '_blank')}
+                                        className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none focus:ring-2 focus:ring-white hover:bg-gray-600"
+                                    >
+                                        Navigate
+                                    </Button>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
