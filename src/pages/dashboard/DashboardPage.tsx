@@ -187,6 +187,7 @@ function DashboardPage() {
                                             <RouteDetails
                                                 key={route.id}
                                                 route={route}
+                                                participants={participants}
                                                 onRouteChange={handleRouteUpdate}
                                                 onRouteDelete={handleRouteDelete}
                                             />

@@ -3,6 +3,7 @@ import RouteEdit from "../route-edit";
 import type { RouteResponse } from "../../lib/route";
 import RouteDelete from "../route-delete";
 import { Button } from "@headlessui/react";
+import type { ParticipantResponse } from "../../lib/participant";
 
 function formatMinutes(totalMinutes: number): string {
     const hours = Math.floor(totalMinutes / 60);
@@ -16,13 +17,15 @@ function isValidDate(d: Date): boolean {
 
 type RouteDetailsProps = {
     route: RouteResponse;
+    participants: ParticipantResponse[];
     onRouteChange: (updatedRoute: RouteResponse) => void;
     onRouteDelete: (id: string) => void;
 };
 
-export default function RouteDetails({ route: initialRoute, onRouteChange, onRouteDelete }: RouteDetailsProps) {
+export default function RouteDetails({ route: initialRoute, participants: participants, onRouteChange, onRouteDelete }: RouteDetailsProps) {
     const [route, setRoute] = useState<RouteResponse>(initialRoute);
     const [kilometer, setKilometers] = useState(1);
+    const [tp, setTp] = useState<string>();
 
 
     function handleRouteUpdate(updated: { estimatedStartTime: string; estimatedAverageSpeed: number; pauseInMinutes: number }) {
@@ -101,7 +104,7 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
 
                             <div className="mb-4">
                                 <label htmlFor="kilometer" className="block text-sm font-medium text-gray-600 mb-1">
-                                    <strong>Navigate to:</strong>
+                                    <strong>Navigate to kilometer:</strong>
                                 </label>
                                 <div className="flex items-center gap-2">
                                     <input
@@ -117,6 +120,33 @@ export default function RouteDetails({ route: initialRoute, onRouteChange, onRou
                                     />
                                     <Button
                                         onClick={() => window.open(`https://api.headoftp.com/route/${route.id}/navigate?meters=${kilometer * 1000}`, '_blank')}
+                                        className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none focus:ring-2 focus:ring-white hover:bg-gray-600"
+                                    >
+                                        Navigate
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <label htmlFor="kilometer" className="block text-sm font-medium text-gray-600 mb-1">
+                                    <strong>Navigate to meeting point with TP:</strong>
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        id="role"
+                                        className="mt-1 w-full rounded-md border border-white/30 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                                        required
+                                        onChange={e => setTp(e.target.value)}
+                                    >
+                                        <option>Select TP</option>
+                                        {participants.filter(p => p.role === 'TP').map(participant => (
+                                            <option key={participant.id} value={participant.id}>
+                                                {participant.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <Button
+                                        onClick={() => window.open(`https://api.headoftp.com/route/${route.id}/navigate?tp=${tp}`, '_blank')}
                                         className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none focus:ring-2 focus:ring-white hover:bg-gray-600"
                                     >
                                         Navigate
