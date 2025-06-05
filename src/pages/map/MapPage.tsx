@@ -10,6 +10,7 @@ type Location = {
     routeId: string;
     latitude: number;
     longitude: number;
+    type: string;
 };
 
 function MapPage() {
@@ -62,7 +63,7 @@ function MapPage() {
         };
 
         if (selectedRouteIds.length > 0) {
-            updateRoutePoints();
+            updateRoutePoints().then(r => console.log(r));
         } else {
             setRoutePointsMap(new Map());
         }
@@ -75,14 +76,63 @@ function MapPage() {
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
             onConnect: () => {
-                stompClient.subscribe('/topic/route/ghost', (message) => {
-                    if (message.body) {
-                        const locationList: Location[] = JSON.parse(message.body);
-                        const filtered = locationList.filter((loc: Location) =>
-                            selectedRouteIds.includes(loc.routeId)
-                        );
-                        setLocations(filtered);
-                    }
+                selectedRouteIds.forEach((routeId) => {
+                    const ghostTopic = `/topic/route/${routeId}/ghost`;
+                    stompClient.subscribe(ghostTopic, (message) => {
+                        if (message.body) {
+                            const parsed = JSON.parse(message.body);
+                            const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                            const locationList: Location[] = rawList.map((loc) => ({
+                                ...loc,
+                                routeId: routeId,
+                                type: 'GHOST',
+                            }));
+
+                            setLocations((prevLocations) => [
+                                ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'GHOST')),
+                                ...locationList,
+                            ]);
+                        }
+                    });
+
+                    const carTopic = `/topic/route/${routeId}/car`;
+                    stompClient.subscribe(carTopic, (message) => {
+                        if (message.body) {
+                            const parsed = JSON.parse(message.body);
+                            const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                            const locationList: Location[] = rawList.map((loc) => ({
+                                ...loc,
+                                routeId: routeId,
+                                type: 'CAR',
+                            }));
+
+                            setLocations((prevLocations) => [
+                                ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'CAR')),
+                                ...locationList,
+                            ]);
+                        }
+                    });
+
+                    const bikeTopic = `/topic/route/${routeId}/bike`;
+                    stompClient.subscribe(bikeTopic, (message) => {
+                        if (message.body) {
+                            const parsed = JSON.parse(message.body);
+                            const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                            const locationList: Location[] = rawList.map((loc) => ({
+                                ...loc,
+                                routeId: routeId,
+                                type: 'BIKE',
+                            }));
+
+                            setLocations((prevLocations) => [
+                                ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'BIKE')),
+                                ...locationList,
+                            ]);
+                        }
+                    });
                 });
             },
         });
@@ -90,10 +140,10 @@ function MapPage() {
         stompClient.activate();
 
         return () => {
-            stompClient.deactivate();
+            stompClient.deactivate().then(r => console.log(r));
         };
     }, [selectedRouteIds]);
-    
+
     return (
         <div className="relative h-screen w-full">
             <div className="z-0 h-full w-full">

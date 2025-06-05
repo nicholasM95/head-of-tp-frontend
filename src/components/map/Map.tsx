@@ -1,4 +1,4 @@
-import { MapContainer, Marker, TileLayer, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, useMap, CircleMarker } from 'react-leaflet';
 import L from 'leaflet';
 import type { RoutePointResponse } from "../../lib/route";
 import { type JSX, useEffect, useRef } from "react";
@@ -7,6 +7,7 @@ type Location = {
     routeId: string;
     latitude: number;
     longitude: number;
+    type: string;
 };
 
 const COLORS = ['red', 'blue', 'green', 'orange', 'purple', 'black', 'brown'];
@@ -69,6 +70,20 @@ export default function Map({ locations, routePointsMap }: { locations: Location
         ? [firstRoutePoints[0].latitude, firstRoutePoints[0].longitude]
         : [50.8467, 4.3499];
 
+
+    const getColor = (type: string) => {
+        switch (type.toUpperCase()) {
+            case 'GHOST':
+                return 'green';
+            case 'CAR':
+                return 'blue';
+            case 'BIKE':
+                return 'black';
+            default:
+                return 'pink';
+        }
+    };
+
     return (
         <MapContainer
             center={center as L.LatLngExpression}
@@ -85,11 +100,16 @@ export default function Map({ locations, routePointsMap }: { locations: Location
             {polylines}
 
             {locations.map((loc, index) => (
-                <Marker
+                <CircleMarker
                     key={index}
-                    position={[loc.latitude, loc.longitude] as L.LatLngExpression}
-                >
-                </Marker>
+                    center={[loc.latitude, loc.longitude]}
+                    radius={8}
+                    pathOptions={{
+                        color: getColor(loc.type),
+                        fillColor: 'yellow',
+                        fillOpacity: 0.8,
+                    }}
+                />
             ))}
             <SetViewOnChange center={center as [number, number]} />
         </MapContainer>
