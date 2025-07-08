@@ -89,7 +89,11 @@ jobs:
       - name: Terraform state ls
         if: github.ref == 'refs/heads/develop'
         id: tf-state
-        run: terraform state list
+        run: |
+          terraform state list
+          terraform state rm module.static_website.data.cloudflare_zones.zone
+          terraform state rm module.static_website.cloudflare_dns_record.dns_record
+          terraform state rm module.static_website.cloudflare_dns_record.dns_record_validation["headoftp.com"]
         working-directory: infra/prod
 
       - name: Terraform plan
