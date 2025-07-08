@@ -12,7 +12,7 @@ function classNames(...classes: string[]) {
 const navigation = [
     { name: 'Map', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Share Location', href: '/tutorial' },
+    { name: 'Info', href: '/info' },
 ]
 
 export default function Navbar() {

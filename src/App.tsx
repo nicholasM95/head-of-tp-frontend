@@ -3,7 +3,7 @@ import MapPage from './pages/map';
 import AdminPage from './pages/admin';
 import Navbar from "./components/navbar";
 import DashboardPage from "./pages/dashboard/DashboardPage.tsx";
-import TutorialPage from "./pages/tutorial";
+import InfoPage from "./pages/info";
 
 function App() {
     return (
@@ -13,7 +13,7 @@ function App() {
                 <Route path="/" element={<MapPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin" element={<AdminPage />} />
-                <Route path="/tutorial" element={<TutorialPage />} />
+                <Route path="/info" element={<InfoPage />} />
             </Routes>
         </div>
     );
