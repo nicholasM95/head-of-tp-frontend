@@ -5,7 +5,7 @@ export default function ShareLocation() {
             <div className="relative bg-white rounded-2xl shadow-md p-4">
                 <div className="flex justify-between items-start">
                     <div>
-                        <h2 className="text-lg font-semibold text-gray-800">How to Share Your Live Location</h2>
+                        <h2 className="text-lg font-semibold text-gray-800">Guide: How to Share Your Live Location</h2>
                         <div className="mt-2 text-sm text-gray-600 space-y-4">
                             <div>
                                 <strong>Step 1: Install the App</strong>
