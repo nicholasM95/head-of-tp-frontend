@@ -10,6 +10,7 @@ export default defineConfig({
       tailwindcss(),
       VitePWA({
           registerType: 'autoUpdate',
+          injectRegister: 'auto',
           manifest: {
               name: 'Head Of TP',
               short_name: 'Head Of TP',
