@@ -16,7 +16,6 @@ permissions:
 
 env:
   AWS_ROLE: 'arn:aws:iam::896918338968:role/GitHubActionsHeadOfTpFrontend'
-  VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
 
 jobs:
   release:
@@ -36,18 +35,6 @@ jobs:
           rm -rf dist
           npm install
           npm run build
-
-      - name: Import secret
-        id: import-secret
-        uses: hashicorp/vault-action@v3
-        with:
-          url: ${{ env.VAULT_ADDR }}
-          role: github-actions-secret
-          method: jwt
-          path: github-actions-secret
-          secrets: |
-            github-actions-secret/data/secret CLOUDFLARE_API_KEY | CLOUDFLARE_API_KEY ;
-            github-actions-secret/data/secret CLOUDFLARE_EMAIL | CLOUDFLARE_EMAIL ;    
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
