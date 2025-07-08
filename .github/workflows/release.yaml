@@ -7,6 +7,10 @@ on:
       - main
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   issues: write
@@ -80,6 +84,12 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         id: tf-init
         run: terraform init
+        working-directory: infra/prod
+
+      - name: Terraform state ls
+        if: github.ref == 'refs/heads/develop'
+        id: tf-state
+        run: terraform state ls
         working-directory: infra/prod
 
       - name: Terraform plan
