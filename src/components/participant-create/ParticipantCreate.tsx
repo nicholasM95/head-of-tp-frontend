@@ -25,6 +25,11 @@ export default function ParticipantCreate({ devices, onCreate }: ParticipantCrea
         setIsOpen(false)
     }
 
+    function handleCancel(e: React.FormEvent) {
+        e.preventDefault();
+        close();
+    }
+
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         close();
@@ -144,6 +149,13 @@ export default function ParticipantCreate({ devices, onCreate }: ParticipantCrea
                             </div>
 
                             <div className="flex justify-end">
+                                <Button
+                                    type="button"
+                                    onClick={ handleCancel }
+                                    className="mr-3 inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"
+                                >
+                                    Cancel
+                                </Button>
                                 <Button
                                     type="submit"
                                     className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"
