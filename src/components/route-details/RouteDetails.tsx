@@ -43,6 +43,16 @@ export default function RouteDetails({ route: initialRoute, participants: partic
         onRouteDelete(deleted.routeId);
     }
 
+    function routeStarted(): boolean {
+        if (!route?.startTime || !route?.estimatedEndTime) return false;
+
+        const now = new Date();
+        const start = new Date(route.startTime);
+        const end = new Date(route.estimatedEndTime);
+
+        return now >= start && now <= end;
+    }
+
     return (
         <div>
             <div className="relative bg-white rounded-2xl shadow-md p-4">
@@ -134,7 +144,7 @@ export default function RouteDetails({ route: initialRoute, participants: partic
                                 <div className="flex items-center gap-2">
                                     <select
                                         id="role"
-                                        className="mt-1 w-full rounded-md border border-white/30 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                                        className="w-48 mt-1 rounded-md border border-white/30 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
                                         required
                                         onChange={e => setTp(e.target.value)}
                                     >
@@ -146,12 +156,27 @@ export default function RouteDetails({ route: initialRoute, participants: partic
                                         ))}
                                     </select>
                                     <Button
+                                        disabled={!tp || tp === 'Select TP' || !routeStarted()}
                                         onClick={() => window.open(`https://api.headoftp.com/route/${route.id}/navigate?tp=${tp}`, '_blank')}
-                                        className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none focus:ring-2 focus:ring-white hover:bg-gray-600"
-                                    >
+                                        className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold shadow-inner shadow-white/10 focus:outline-none focus:ring-2 focus:ring-white ${
+                                            !route?.id || !tp || tp === 'Select TP' || !routeStarted()
+                                                ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                                                : 'bg-gray-700 text-white hover:bg-gray-600'
+                                        }`}                                    >
                                         Navigate
                                     </Button>
                                 </div>
+                                {!routeStarted() && (
+                                    <div className="text-xs text-gray-500">
+                                        This functionality is only available during an active route.
+                                    </div>
+                                )}
+                                {routeStarted() && (!tp || tp === 'Select TP') && (
+                                    <div className="text-xs text-gray-500">
+                                        This functionality is only available after selecting a TP.
+                                    </div>
+                                )}
+
                             </div>
 
                         </div>
