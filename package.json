@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-api-route": "npx openapi-generator-cli generate -i ./route-openapi-spec.yaml -g typescript-fetch -o src/lib/route",
-    "generate-api-participant": "npx openapi-generator-cli generate -i ./participant-openapi-spec.yaml -g typescript-fetch -o src/lib/participant"
+    "generate-api-participant": "npx openapi-generator-cli generate -i ./participant-openapi-spec.yaml -g typescript-fetch -o src/lib/participant",
+    "generate-api-device": "npx openapi-generator-cli generate -i ./device-openapi-spec.yaml -g typescript-fetch -o src/lib/device"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",

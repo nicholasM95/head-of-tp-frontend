@@ -1,0 +1,12 @@
+.openapi-generator-ignore
+apis/DeviceApi.ts
+apis/index.ts
+index.ts
+models/CreateDeviceLocationRequest.ts
+models/DeviceLocation.ts
+models/DeviceLocationBattery.ts
+models/DeviceLocationCoords.ts
+models/DeviceResponse.ts
+models/ProblemDetailResponse.ts
+models/index.ts
+runtime.ts

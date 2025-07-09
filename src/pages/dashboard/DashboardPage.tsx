@@ -5,15 +5,18 @@ import { useEffect, useState } from "react";
 import { createRoute, deleteRoute, getAllRoutes, patchRouteByRouteId } from "../../services/route.service.ts";
 import type { RouteResponse } from "../../lib/route";
 import { createParticipant, deleteParticipant, getAllParticipants, patchParticipantById } from "../../services/participant.service.ts";
+import { getAllDevices } from "../../services/device.service.ts";
 import type { CreateParticipantRequest, ParticipantResponse } from "../../lib/participant";
 import ParticipantDetails from "../../components/participant-details";
 import ParticipantCreate from "../../components/participant-create";
 import RouteCreate from "../../components/route-create";
+import type { DeviceResponse } from "../../lib/device";
 
 function DashboardPage() {
 
     const [routes, setRoutes] = useState<RouteResponse[]>([]);
     const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
+    const [devices, setDevices] = useState<DeviceResponse[]>([]);
 
     const [loadingCreateRoute, setLoadingCreateRoute] = useState(false);
     const [loadingDeleteRoute, setLoadingDeleteRoute] = useState(false);
@@ -27,15 +30,21 @@ function DashboardPage() {
         return getAllParticipants();
     }
 
+    async function fetchDevice() {
+        return getAllDevices();
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [routesData, participantsData] = await Promise.all([
+                const [routesData, participantsData, devicesData] = await Promise.all([
                     fetchRoutes(),
                     fetchParticipants(),
+                    fetchDevice()
                 ]);
                 setRoutes(routesData);
                 setParticipants(participantsData);
+                setDevices(devicesData);
             } catch (err) {
                 console.error('Failed to fetch data:', err);
             }
@@ -198,12 +207,13 @@ function DashboardPage() {
                             <TabPanel key="team">
                                 <div className="pt-4">
                                     <div className="max-w-md mx-auto space-y-4">
-                                        <ParticipantCreate onCreate={handleOnCreateParticipant}></ParticipantCreate>
+                                        <ParticipantCreate devices={devices} onCreate={handleOnCreateParticipant}></ParticipantCreate>
                                     </div>
                                     <div className="max-w-md mx-auto space-y-4 mt-8">
                                         {participants.map((participant) => (
                                             <ParticipantDetails
                                                 key={participant.id}
+                                                devices={devices}
                                                 participant={participant}
                                                 onParticipantChange={handleParticipantUpdate}
                                                 onParticipantDelete={handleParticipantDelete}

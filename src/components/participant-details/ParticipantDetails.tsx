@@ -2,14 +2,16 @@ import { useState } from "react";
 import type { ParticipantResponse, RoleType, VehicleType } from "../../lib/participant";
 import ParticipantEdit from "../participant-edit";
 import ParticipantDelete from "../participant-delete";
+import type { DeviceResponse } from "../../lib/device";
 
 type ParticipantDetailsProps = {
+    devices: DeviceResponse[];
     participant: ParticipantResponse;
     onParticipantChange: (updatedParticipant: ParticipantResponse) => void;
     onParticipantDelete: (id: string) => void;
 };
 
-export default function ParticipantDetails({ participant: initialParticipant, onParticipantChange, onParticipantDelete }: ParticipantDetailsProps) {
+export default function ParticipantDetails({ devices, participant: initialParticipant, onParticipantChange, onParticipantDelete }: ParticipantDetailsProps) {
     const [participant, setParticipant] = useState<ParticipantResponse>(initialParticipant);
 
     function handleParticipantUpdate(updated: { name: string; deviceId: string; vehicle: VehicleType; role: RoleType }) {
@@ -58,7 +60,7 @@ export default function ParticipantDetails({ participant: initialParticipant, on
                         </div>
                     </div>
                     <div className="flex flex-col space-y-4">
-                        <ParticipantEdit participant={participant} onSave={handleParticipantUpdate}></ParticipantEdit>
+                        <ParticipantEdit devices={devices} participant={participant} onSave={handleParticipantUpdate}></ParticipantEdit>
                         <ParticipantDelete participant={participant} onDelete={handleParticipantDelete}></ParticipantDelete>
                     </div>
                 </div>

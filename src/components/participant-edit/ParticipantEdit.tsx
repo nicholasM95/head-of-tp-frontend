@@ -6,13 +6,15 @@ import {
 
 import { useState } from 'react'
 import type { ParticipantResponse, RoleType, VehicleType } from "../../lib/participant";
+import type { DeviceResponse } from "../../lib/device";
 
 type ParticipantEditProps = {
+    devices: DeviceResponse[];
     participant: ParticipantResponse;
     onSave: (data: { name: string; deviceId: string, vehicle: VehicleType, role: RoleType }) => void;
 }
 
-export default function ParticipantEdit({ participant, onSave }: ParticipantEditProps) {
+export default function ParticipantEdit({ devices, participant, onSave }: ParticipantEditProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const [name, setName] = useState<string | ''>(participant.name ?? '');
@@ -21,6 +23,7 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
     const [role, setRole] = useState<RoleType>(participant.role);
 
     function open() {
+        console.log(devices);
         setIsOpen(true)
     }
 
@@ -92,15 +95,17 @@ export default function ParticipantEdit({ participant, onSave }: ParticipantEdit
                                 >
                                     Device Id
                                 </label>
-                                <input
+                                <select
                                     id="deviceId"
-                                    type="input"
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-                                    placeholder="Enter device id"
                                     required
                                     value={deviceId}
                                     onChange={e => setDeviceId(e.target.value)}
-                                />
+                                >
+                                    {devices.map((device) => (
+                                        <option value={device.id}>{device.id}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div>
