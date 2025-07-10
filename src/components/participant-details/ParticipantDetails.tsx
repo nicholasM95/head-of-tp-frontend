@@ -41,6 +41,14 @@ export default function ParticipantDetails({ devices, participant: initialPartic
                             <div><strong>Vehicle:</strong> {participant.vehicle}</div>
                             <div><strong>Role:</strong> {participant.role}</div>
 
+                            <div><strong>Location update:</strong> {participant.lastModifiedDateLocation.toLocaleString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            })}</div>
+
                             <hr className="my-4 border-t border-gray-200" />
 
                             <div><strong>Last modified date:</strong> {participant.lastModifiedDate.toLocaleString(undefined, {

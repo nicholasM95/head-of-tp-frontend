@@ -76,6 +76,12 @@ export interface ParticipantResponse {
      * @memberof ParticipantResponse
      */
     lastModifiedDate: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof ParticipantResponse
+     */
+    lastModifiedDateLocation: Date;
 }
 
 
@@ -91,6 +97,7 @@ export function instanceOfParticipantResponse(value: object): value is Participa
     if (!('role' in value) || value['role'] === undefined) return false;
     if (!('createDate' in value) || value['createDate'] === undefined) return false;
     if (!('lastModifiedDate' in value) || value['lastModifiedDate'] === undefined) return false;
+    if (!('lastModifiedDateLocation' in value) || value['lastModifiedDateLocation'] === undefined) return false;
     return true;
 }
 
@@ -111,6 +118,7 @@ export function ParticipantResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'role': RoleTypeFromJSON(json['role']),
         'createDate': (new Date(json['createDate'])),
         'lastModifiedDate': (new Date(json['lastModifiedDate'])),
+        'lastModifiedDateLocation': (new Date(json['lastModifiedDateLocation'])),
     };
 }
 
@@ -132,6 +140,7 @@ export function ParticipantResponseToJSONTyped(value?: ParticipantResponse | nul
         'role': RoleTypeToJSON(value['role']),
         'createDate': ((value['createDate']).toISOString()),
         'lastModifiedDate': ((value['lastModifiedDate']).toISOString()),
+        'lastModifiedDateLocation': ((value['lastModifiedDateLocation']).toISOString()),
     };
 }
 

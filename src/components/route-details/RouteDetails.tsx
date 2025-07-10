@@ -44,10 +44,10 @@ export default function RouteDetails({ route: initialRoute, participants: partic
     }
 
     function routeStarted(): boolean {
-        if (!route?.startTime || !route?.estimatedEndTime) return false;
+        if (!route?.estimatedStartTime || !route?.estimatedEndTime) return false;
 
         const now = new Date();
-        const start = new Date(route.startTime);
+        const start = new Date(route.estimatedStartTime);
         const end = new Date(route.estimatedEndTime);
 
         return now >= start && now <= end;
