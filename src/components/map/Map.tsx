@@ -1,7 +1,9 @@
-import { MapContainer, TileLayer, Polyline, useMap, CircleMarker } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, useMap, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import type { RoutePointResponse } from "../../lib/route";
 import { type JSX, useEffect, useRef } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { Bike, Car, Ghost, MapPin } from "lucide-react";
 
 type Location = {
     routeId: string;
@@ -71,17 +73,48 @@ export default function Map({ locations, routePointsMap }: { locations: Location
         : [50.8467, 4.3499];
 
 
-    const getColor = (type: string) => {
+    const getIcon = (type: string) => {
+        let Icon = MapPin;
+        let color = 'deeppink';
+
         switch (type.toUpperCase()) {
             case 'GHOST':
-                return 'green';
+                Icon = Ghost;
+                color = 'green';
+                break;
             case 'CAR':
-                return 'blue';
+                Icon = Car;
+                color = 'blue';
+                break;
             case 'BIKE':
-                return 'black';
-            default:
-                return 'pink';
+                Icon = Bike;
+                color = 'black';
+                break;
         }
+
+        const html = renderToStaticMarkup(
+            <span
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    background: 'white',
+                    boxShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
+                }}
+            >
+                <Icon color={color} size={16} strokeWidth={2} />
+            </span>
+        );
+
+        return L.divIcon({
+            html,
+            className: 'route-marker-icon',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14],
+        });
     };
 
     return (
@@ -100,15 +133,10 @@ export default function Map({ locations, routePointsMap }: { locations: Location
             {polylines}
 
             {locations.map((loc, index) => (
-                <CircleMarker
+                <Marker
                     key={index}
-                    center={[loc.latitude, loc.longitude]}
-                    radius={8}
-                    pathOptions={{
-                        color: getColor(loc.type),
-                        fillColor: 'yellow',
-                        fillOpacity: 0.8,
-                    }}
+                    position={[loc.latitude, loc.longitude]}
+                    icon={getIcon(loc.type)}
                 />
             ))}
             <SetViewOnChange center={center as [number, number]} />

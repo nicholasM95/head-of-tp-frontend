@@ -1,3 +1,5 @@
+import { Bike, Car, Ghost } from "lucide-react";
+
 export default function MapLegend() {
 
     return (
@@ -9,15 +11,21 @@ export default function MapLegend() {
                         <div className="mt-2 text-sm text-gray-600 space-y-4">
                             <ul className="text-sm text-gray-700 space-y-3">
                                 <li className="flex items-center space-x-3">
-                                    <span className="w-4 h-4 rounded-full bg-green-700"></span>
+                                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white shadow">
+                                        <Ghost className="w-4 h-4 text-green-700" />
+                                    </span>
                                     <span>Ghost</span>
                                 </li>
                                 <li className="flex items-center space-x-3">
-                                    <span className="w-4 h-4 rounded-full bg-blue-800"></span>
+                                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white shadow">
+                                        <Car className="w-4 h-4 text-blue-800" />
+                                    </span>
                                     <span>Car</span>
                                 </li>
                                 <li className="flex items-center space-x-3">
-                                    <span className="w-4 h-4 rounded-full bg-black"></span>
+                                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white shadow">
+                                        <Bike className="w-4 h-4 text-black" />
+                                    </span>
                                     <span>Bike</span>
                                 </li>
                             </ul>
