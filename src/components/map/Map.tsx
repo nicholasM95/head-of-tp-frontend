@@ -76,6 +76,9 @@ export default function Map({ locations, routePointsMap }: { locations: Location
     const getIcon = (type: string) => {
         let Icon = MapPin;
         let color = 'deeppink';
+        let background = 'white';
+        let size = 28;
+        let iconSize = 16;
 
         switch (type.toUpperCase()) {
             case 'GHOST':
@@ -90,6 +93,10 @@ export default function Map({ locations, routePointsMap }: { locations: Location
                 Icon = Bike;
                 color = 'black';
                 break;
+            case 'HEAD_OF_TP':
+                Icon = Car;
+                color = 'red';
+                break;
         }
 
         const html = renderToStaticMarkup(
@@ -98,22 +105,23 @@ export default function Map({ locations, routePointsMap }: { locations: Location
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: 28,
-                    height: 28,
+                    width: size,
+                    height: size,
                     borderRadius: '50%',
-                    background: 'white',
+                    background,
+                    border: background === 'white' ? undefined : '2px solid white',
                     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
                 }}
             >
-                <Icon color={color} size={16} strokeWidth={2} />
+                <Icon color={color} size={iconSize} strokeWidth={2} />
             </span>
         );
 
         return L.divIcon({
             html,
             className: 'route-marker-icon',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14],
+            iconSize: [size, size],
+            iconAnchor: [size / 2, size / 2],
         });
     };
 

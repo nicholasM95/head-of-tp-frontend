@@ -28,6 +28,12 @@ export default function MapLegend() {
                                     </span>
                                     <span>Bike</span>
                                 </li>
+                                <li className="flex items-center space-x-3">
+                                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white shadow">
+                                        <Car className="w-4 h-4 text-red-500" />
+                                    </span>
+                                    <span>Head Of TP</span>
+                                </li>
                             </ul>
                         </div>
                     </div>

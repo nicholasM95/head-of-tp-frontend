@@ -114,6 +114,26 @@ function MapPage() {
                     });
 
                     devices.forEach((device) => {
+                        const headOfTpTopic = `/topic/route/${routeId}/head_of_tp/${device.id.toUpperCase()}`;
+                        stompClient.subscribe(headOfTpTopic, (message) => {
+                            if (message.body) {
+                                const parsed = JSON.parse(message.body);
+                                const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                                const locationList: Location[] = rawList.map((loc) => ({
+                                    ...loc,
+                                    routeId: routeId,
+                                    type: 'HEAD_OF_TP',
+                                    deviceId: device.id
+                                }));
+
+                                setLocations((prevLocations) => [
+                                    ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'HEAD_OF_TP' && l.deviceId === device.id)),
+                                    ...locationList,
+                                ]);
+                            }
+                        });
+
                         const carTopic = `/topic/route/${routeId}/car/${device.id.toUpperCase()}`;
                         stompClient.subscribe(carTopic, (message) => {
                             if (message.body) {
