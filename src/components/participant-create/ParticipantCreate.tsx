@@ -2,12 +2,14 @@ import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 
 import { useState } from 'react'
 import type { RoleType, VehicleType } from "../../lib/participant";
+import type { DeviceResponse } from "../../lib/device";
 
 type ParticipantCreateProps = {
+    devices: DeviceResponse[];
     onCreate: (data: { name: string; deviceId: string, vehicle: VehicleType, role: RoleType }) => void;
 }
 
-export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) {
+export default function ParticipantCreate({ devices, onCreate }: ParticipantCreateProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const [name, setName] = useState<string>();
@@ -21,6 +23,11 @@ export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) 
 
     function close() {
         setIsOpen(false)
+    }
+
+    function handleCancel(e: React.FormEvent) {
+        e.preventDefault();
+        close();
     }
 
     function handleSubmit(e: React.FormEvent) {
@@ -90,14 +97,17 @@ export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) 
                                 >
                                     Device Id
                                 </label>
-                                <input
+                                <select
                                     id="deviceId"
-                                    type="input"
                                     className="mt-1 w-full rounded-md border border-white/30 bg-gray-900 px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
-                                    placeholder="Enter device id"
                                     required
+                                    value={deviceId}
                                     onChange={e => setDeviceId(e.target.value)}
-                                />
+                                >
+                                    {devices.map((device) => (
+                                        <option value={device.id}>{device.id}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div>
@@ -139,6 +149,13 @@ export default function ParticipantCreate({ onCreate }: ParticipantCreateProps) 
                             </div>
 
                             <div className="flex justify-end">
+                                <Button
+                                    type="button"
+                                    onClick={ handleCancel }
+                                    className="mr-3 inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"
+                                >
+                                    Cancel
+                                </Button>
                                 <Button
                                     type="submit"
                                     className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-inner shadow-white/10 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-white"

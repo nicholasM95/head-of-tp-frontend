@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "generate-api-route": "npx openapi-generator-cli generate -i ./route-openapi-spec.yaml -g typescript-fetch -o src/lib/route",
-    "generate-api-participant": "npx openapi-generator-cli generate -i ./participant-openapi-spec.yaml -g typescript-fetch -o src/lib/participant"
+    "generate-api-participant": "npx openapi-generator-cli generate -i ./participant-openapi-spec.yaml -g typescript-fetch -o src/lib/participant",
+    "generate-api-device": "npx openapi-generator-cli generate -i ./device-openapi-spec.yaml -g typescript-fetch -o src/lib/device"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
@@ -19,6 +20,7 @@
     "@types/leaflet": "^1.9.18",
     "@types/sockjs-client": "^1.5.4",
     "leaflet": "^1.9.4",
+    "lucide-react": "^1.22.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-leaflet": "^5.0.0",
@@ -38,6 +40,7 @@
     "globals": "^16.0.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5"
+    "vite": "^7.0.0",
+    "vite-plugin-pwa": "^1.0.0"
   }
 }

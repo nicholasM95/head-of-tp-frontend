@@ -135,6 +135,7 @@ components:
         - role
         - createDate
         - lastModifiedDate
+        - lastModifiedDateLocation
       properties:
         id:
           type: string
@@ -154,6 +155,9 @@ components:
           type: string
           format: date-time
         lastModifiedDate:
+          type: string
+          format: date-time
+        lastModifiedDateLocation:
           type: string
           format: date-time
     VehicleType:

@@ -5,21 +5,35 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { getAllRoutePointsByRouteId, getAllRoutes } from "../../services/route.service.ts";
 import type { RoutePointResponse, RouteResponse } from "../../lib/route";
+import type { DeviceResponse } from "../../lib/device";
+import { getAllDevices } from "../../services/device.service.ts";
 
 type Location = {
     routeId: string;
     latitude: number;
     longitude: number;
+    type: string;
+    deviceId: string;
 };
 
 function MapPage() {
     const [routes, setRoutes] = useState<RouteResponse[]>([]);
+    const [devices, setDevices] = useState<DeviceResponse[]>([]);
+
     const [selectedRouteIds, setSelectedRouteIds] = useState<string[]>(() => {
         const stored = sessionStorage.getItem('selectedRouteIds');
         return stored ? JSON.parse(stored) : [];
     });
 
     const [locations, setLocations] = useState<Location[]>([]);
+
+    async function fetchRoutes() {
+        return getAllRoutes();
+    }
+
+    async function fetchDevice() {
+        return getAllDevices();
+    }
 
 
     useEffect(() => {
@@ -28,15 +42,19 @@ function MapPage() {
     const [routePointsMap, setRoutePointsMap] = useState<Map<string, RoutePointResponse[]>>(new Map());
 
     useEffect(() => {
-        const fetchRoutes = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getAllRoutes();
-                setRoutes(data);
+                const [routesData, devicesData] = await Promise.all([
+                    fetchRoutes(),
+                    fetchDevice()
+                ]);
+                setRoutes(routesData);
+                setDevices(devicesData);
             } catch (err) {
-                console.error("Can't get routes:", err);
+                console.error('Failed to fetch data:', err);
             }
         };
-        fetchRoutes();
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -62,7 +80,7 @@ function MapPage() {
         };
 
         if (selectedRouteIds.length > 0) {
-            updateRoutePoints();
+            updateRoutePoints().then(r => console.log(r));
         } else {
             setRoutePointsMap(new Map());
         }
@@ -75,14 +93,90 @@ function MapPage() {
             webSocketFactory: () => socket,
             reconnectDelay: 5000,
             onConnect: () => {
-                stompClient.subscribe('/topic/route/ghost', (message) => {
-                    if (message.body) {
-                        const locationList: Location[] = JSON.parse(message.body);
-                        const filtered = locationList.filter((loc: Location) =>
-                            selectedRouteIds.includes(loc.routeId)
-                        );
-                        setLocations(filtered);
-                    }
+                selectedRouteIds.forEach((routeId) => {
+                    const ghostTopic = `/topic/route/${routeId}/ghost/GHOST_DEVICE_ID`;
+                    stompClient.subscribe(ghostTopic, (message) => {
+                        if (message.body) {
+                            const parsed = JSON.parse(message.body);
+                            const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                            const locationList: Location[] = rawList.map((loc) => ({
+                                ...loc,
+                                routeId: routeId,
+                                type: 'GHOST',
+                            }));
+
+                            setLocations((prevLocations) => [
+                                ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'GHOST')),
+                                ...locationList,
+                            ]);
+                        }
+                    });
+
+                    devices.forEach((device) => {
+                        const headOfTpTopic = `/topic/route/${routeId}/head_of_tp/${device.id.toUpperCase()}`;
+                        stompClient.subscribe(headOfTpTopic, (message) => {
+                            if (message.body) {
+                                const parsed = JSON.parse(message.body);
+                                const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                                const locationList: Location[] = rawList.map((loc) => ({
+                                    ...loc,
+                                    routeId: routeId,
+                                    type: 'HEAD_OF_TP',
+                                    deviceId: device.id
+                                }));
+
+                                setLocations((prevLocations) => [
+                                    ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'HEAD_OF_TP' && l.deviceId === device.id)),
+                                    ...locationList,
+                                ]);
+                            }
+                        });
+
+                        const carTopic = `/topic/route/${routeId}/car/${device.id.toUpperCase()}`;
+                        stompClient.subscribe(carTopic, (message) => {
+                            if (message.body) {
+                                const parsed = JSON.parse(message.body);
+                                const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                                const locationList: Location[] = rawList.map((loc) => ({
+                                    ...loc,
+                                    routeId: routeId,
+                                    type: 'CAR',
+                                    deviceId: device.id
+                                }));
+
+                                setLocations((prevLocations) => [
+                                    ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'CAR' && l.deviceId === device.id)),
+                                    ...locationList,
+                                ]);
+                            }
+                        });
+
+                        const bikeTopic = `/topic/route/${routeId}/bike/${device.id.toUpperCase()}`;
+                        stompClient.subscribe(bikeTopic, (message) => {
+                            if (message.body) {
+                                const parsed = JSON.parse(message.body);
+                                console.log(parsed);
+                                console.log(bikeTopic);
+                                const rawList = Array.isArray(parsed) ? parsed : [parsed];
+
+                                const locationList: Location[] = rawList.map((loc) => ({
+                                    ...loc,
+                                    routeId: routeId,
+                                    type: 'BIKE',
+                                    deviceId: device.id
+                                }));
+
+                                setLocations((prevLocations) => [
+                                    ...prevLocations.filter(l => !(l.routeId === routeId && l.type === 'BIKE' && l.deviceId === device.id)),
+                                    ...locationList,
+                                ]);
+                            }
+                        });
+                    });
+
                 });
             },
         });
@@ -90,10 +184,10 @@ function MapPage() {
         stompClient.activate();
 
         return () => {
-            stompClient.deactivate();
+            stompClient.deactivate().then(r => console.log(r));
         };
-    }, [selectedRouteIds]);
-    
+    }, [selectedRouteIds, devices]);
+
     return (
         <div className="relative h-screen w-full">
             <div className="z-0 h-full w-full">
