@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   PatchRouteRequest,
   ProblemDetailResponse,
+  RouteClimbResponse,
   RoutePointResponse,
   RouteResponse,
 } from '../models/index';
@@ -25,6 +26,8 @@ import {
     PatchRouteRequestToJSON,
     ProblemDetailResponseFromJSON,
     ProblemDetailResponseToJSON,
+    RouteClimbResponseFromJSON,
+    RouteClimbResponseToJSON,
     RoutePointResponseFromJSON,
     RoutePointResponseToJSON,
     RouteResponseFromJSON,
@@ -36,6 +39,10 @@ export interface CreateRouteRequest {
 }
 
 export interface DeleteRouteByRouteIdRequest {
+    routeId: string;
+}
+
+export interface GetRouteClimbByRouteIdRequest {
     routeId: string;
 }
 
@@ -122,6 +129,39 @@ export class RouteApi extends runtime.BaseAPI {
      */
     async deleteRouteByRouteId(requestParameters: DeleteRouteByRouteIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteRouteByRouteIdRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * get route climbs by route id
+     */
+    async getRouteClimbByRouteIdRaw(requestParameters: GetRouteClimbByRouteIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RouteClimbResponse>>> {
+        if (requestParameters['routeId'] == null) {
+            throw new runtime.RequiredError(
+                'routeId',
+                'Required parameter "routeId" was null or undefined when calling getRouteClimbByRouteId().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/route-climb/{routeId}`.replace(`{${"routeId"}}`, encodeURIComponent(String(requestParameters['routeId']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(RouteClimbResponseFromJSON));
+    }
+
+    /**
+     * get route climbs by route id
+     */
+    async getRouteClimbByRouteId(requestParameters: GetRouteClimbByRouteIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RouteClimbResponse>> {
+        const response = await this.getRouteClimbByRouteIdRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

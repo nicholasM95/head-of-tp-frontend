@@ -114,6 +114,30 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RoutePointResponse'
+  /route-climb/{routeId}:
+    get:
+      tags:
+        - route
+      operationId: getRouteClimbByRouteId
+      summary: get route climbs by route id
+      parameters:
+        - in: path
+          name: routeId
+          schema:
+            type: string
+            format: uuid
+            example: 0ee9fe37-4dd9-4f5b-8093-5da62f354372
+          required: true
+          description: Unique identifier of the route
+      responses:
+        200:
+          description: Route climbs successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RouteClimbResponse'
   /route-point/center/{routeId}:
     get:
       tags:
@@ -216,6 +240,7 @@ components:
         - latitude
         - longitude
         - altitude
+        - distanceFromStartInMeter
       properties:
         latitude:
           type: number
@@ -229,6 +254,34 @@ components:
           type: number
           format: double
           example: 90.2
+        distanceFromStartInMeter:
+          type: integer
+          example: 4000
+    RouteClimbResponse:
+      type: object
+      required:
+        - startDistanceInMeter
+        - endDistanceInMeter
+        - lengthInMeter
+        - elevationGainInMeter
+        - averageGradient
+      properties:
+        startDistanceInMeter:
+          type: integer
+          example: 4000
+        endDistanceInMeter:
+          type: integer
+          example: 5500
+        lengthInMeter:
+          type: integer
+          example: 1500
+        elevationGainInMeter:
+          type: integer
+          example: 120
+        averageGradient:
+          type: number
+          format: double
+          example: 8.0
     ProblemDetailResponse:
       required:
         - title

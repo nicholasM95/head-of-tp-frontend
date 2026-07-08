@@ -37,6 +37,12 @@ export interface RoutePointResponse {
      * @memberof RoutePointResponse
      */
     altitude: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RoutePointResponse
+     */
+    distanceFromStartInMeter: number;
 }
 
 /**
@@ -46,6 +52,7 @@ export function instanceOfRoutePointResponse(value: object): value is RoutePoint
     if (!('latitude' in value) || value['latitude'] === undefined) return false;
     if (!('longitude' in value) || value['longitude'] === undefined) return false;
     if (!('altitude' in value) || value['altitude'] === undefined) return false;
+    if (!('distanceFromStartInMeter' in value) || value['distanceFromStartInMeter'] === undefined) return false;
     return true;
 }
 
@@ -62,6 +69,7 @@ export function RoutePointResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'latitude': json['latitude'],
         'longitude': json['longitude'],
         'altitude': json['altitude'],
+        'distanceFromStartInMeter': json['distanceFromStartInMeter'],
     };
 }
 
@@ -79,6 +87,7 @@ export function RoutePointResponseToJSONTyped(value?: RoutePointResponse | null,
         'latitude': value['latitude'],
         'longitude': value['longitude'],
         'altitude': value['altitude'],
+        'distanceFromStartInMeter': value['distanceFromStartInMeter'],
     };
 }
 

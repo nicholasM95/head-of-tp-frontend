@@ -1,10 +1,11 @@
 import RouteSelector from "../../components/route-selector";
 import MapComponent from "../../components/map";
+import RouteElevationPanel from "../../components/route-elevation";
 import { useEffect, useState } from "react";
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { getAllRoutePointsByRouteId, getAllRoutes } from "../../services/route.service.ts";
-import type { RoutePointResponse, RouteResponse } from "../../lib/route";
+import { getAllRouteClimbsByRouteId, getAllRoutePointsByRouteId, getAllRoutes } from "../../services/route.service.ts";
+import type { RouteClimbResponse, RoutePointResponse, RouteResponse } from "../../lib/route";
 import type { DeviceResponse } from "../../lib/device";
 import { getAllDevices } from "../../services/device.service.ts";
 
@@ -85,6 +86,25 @@ function MapPage() {
             setRoutePointsMap(new Map());
         }
     }, [selectedRouteIds]);
+
+    const singleSelectedRouteId = selectedRouteIds.length === 1 ? selectedRouteIds[0] : null;
+    const [climbs, setClimbs] = useState<RouteClimbResponse[]>([]);
+
+    useEffect(() => {
+        if (!singleSelectedRouteId) {
+            setClimbs([]);
+            return;
+        }
+
+        getAllRouteClimbsByRouteId(singleSelectedRouteId)
+            .then(setClimbs)
+            .catch(error => {
+                console.error(`Error fetching climbs for route ${singleSelectedRouteId}:`, error);
+                setClimbs([]);
+            });
+    }, [singleSelectedRouteId]);
+
+    const selectedRoute = routes.find(route => route.id === singleSelectedRouteId);
 
 
     useEffect(() => {
@@ -200,6 +220,14 @@ function MapPage() {
                     onChange={setSelectedRouteIds}
                 />
             </div>
+            {selectedRoute && (
+                <RouteElevationPanel
+                    key={selectedRoute.id}
+                    route={selectedRoute}
+                    points={routePointsMap.get(selectedRoute.id) ?? []}
+                    climbs={climbs}
+                />
+            )}
         </div>
     )
 }

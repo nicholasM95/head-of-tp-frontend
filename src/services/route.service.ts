@@ -1,4 +1,4 @@
-import { Configuration, RouteApi, type RoutePointResponse, type RouteResponse, type PatchRouteRequest } from "../lib/route";
+import { Configuration, RouteApi, type RouteClimbResponse, type RoutePointResponse, type RouteResponse, type PatchRouteRequest } from "../lib/route";
 
 
 const apiConfig = new Configuration({
@@ -13,6 +13,10 @@ export const getAllRoutes = async (): Promise<RouteResponse[]> => {
 
 export const getAllRoutePointsByRouteId = async (routeId: string): Promise<RoutePointResponse[]> => {
     return await routeApi.getRoutePointByRouteId({ routeId });
+};
+
+export const getAllRouteClimbsByRouteId = async (routeId: string): Promise<RouteClimbResponse[]> => {
+    return await routeApi.getRouteClimbByRouteId({ routeId });
 };
 
 export const patchRouteByRouteId = async (
