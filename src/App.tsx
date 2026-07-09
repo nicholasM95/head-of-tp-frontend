@@ -18,7 +18,7 @@ function App() {
                 setIsUpdateAvailable(true);
             },
             onOfflineReady() {
-                console.log('App is klaar voor offline gebruik');
+                console.log('App is ready for offline use');
             },
         });
     }, []);

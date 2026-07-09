@@ -78,7 +78,7 @@ export default function RouteElevationChart({ points, climbs, selectedClimbIndex
             viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
             className="w-full h-auto"
             role="img"
-            aria-label="Hoogteprofiel met klims"
+            aria-label="Elevation profile with climbs"
         >
             <line x1={0} y1={PLOT_BOTTOM} x2={VIEW_WIDTH} y2={PLOT_BOTTOM} stroke="#c3c2b7" strokeWidth={2.5} />
 

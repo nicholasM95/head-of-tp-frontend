@@ -35,7 +35,7 @@ export default function RouteElevationPanel({ route, points, climbs }: Props) {
                             <div className="text-sm font-semibold text-gray-800">{route.name}</div>
                             <div className="text-xs text-gray-500">
                                 {climbs.length > 0
-                                    ? `${climbs.length} klim${climbs.length === 1 ? '' : 's'} · ${route.elevationGain} m D+`
+                                    ? `${climbs.length} climb${climbs.length === 1 ? '' : 's'} · ${route.elevationGain} m D+`
                                     : `${route.elevationGain} m D+`}
                             </div>
                         </div>
@@ -45,7 +45,7 @@ export default function RouteElevationPanel({ route, points, climbs }: Props) {
 
                 <div className="overflow-y-auto px-4 pb-4" style={{ maxHeight: 'calc(60vh - 4.5rem)' }}>
                     {!hasProfile ? (
-                        <div className="text-sm text-gray-500 py-6 text-center">Geen hoogteprofiel beschikbaar</div>
+                        <div className="text-sm text-gray-500 py-6 text-center">No elevation profile available</div>
                     ) : (
                         <>
                             <RouteElevationChart
@@ -72,7 +72,7 @@ export default function RouteElevationPanel({ route, points, climbs }: Props) {
                                                         style={{ backgroundColor: climbColor(climb.averageGradient) }}
                                                     />
                                                     <span className="text-gray-700">
-                                                        Klim {i + 1} · vanaf km {(climb.startDistanceInMeter / 1000).toFixed(1)} ·
+                                                        Climb {i + 1} · from km {(climb.startDistanceInMeter / 1000).toFixed(1)} ·
                                                         {' '}{(climb.lengthInMeter / 1000).toFixed(1)} km ·
                                                         {' '}+{climb.elevationGainInMeter} m · {climb.averageGradient.toFixed(1)}%
                                                     </span>
