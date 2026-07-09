@@ -209,7 +209,7 @@ function MapPage() {
     }, [selectedRouteIds, devices]);
 
     return (
-        <div className="relative h-screen w-full">
+        <div className="relative h-full w-full overflow-hidden">
             <div className="z-0 h-full w-full">
                 <MapComponent locations={locations} routePointsMap={routePointsMap} />
             </div>

@@ -168,7 +168,7 @@ function DashboardPage() {
                 </div>
             )}
 
-            <div className="flex h-screen w-full justify-center px-4 pt-4">
+            <div className="flex h-full w-full justify-center px-4 pt-4">
                 <div className="w-full max-w-md">
                     <TabGroup>
                         <TabList className="flex gap-4">

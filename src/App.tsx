@@ -35,13 +35,17 @@ function App() {
 
     return (
         <>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<MapPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/info" element={<InfoPage />} />
-            </Routes>
+            <div className="flex h-screen flex-col overflow-hidden">
+                <Navbar />
+                <div className="min-h-0 flex-1 overflow-y-auto">
+                    <Routes>
+                        <Route path="/" element={<MapPage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/admin" element={<AdminPage />} />
+                        <Route path="/info" element={<InfoPage />} />
+                    </Routes>
+                </div>
+            </div>
 
             <Transition appear show={isUpdateAvailable} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={handleClose}>

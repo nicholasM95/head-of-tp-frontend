@@ -131,7 +131,7 @@ export default function Map({ locations, routePointsMap }: { locations: Location
             zoom={11}
             scrollWheelZoom={true}
             zoomControl={false}
-            style={{ height: '100vh', width: '100%' }}>
+            style={{ height: '100%', width: '100%' }}>
 
             <TileLayer
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
