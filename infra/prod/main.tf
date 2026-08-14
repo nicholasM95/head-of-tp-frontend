@@ -1,5 +1,5 @@
 module "static_website" {
-  source                  = "git::https://github.com/nicholasM95/terraform-modules.git//modules/static-website?ref=v1.25.13"
+  source                  = "git::https://github.com/nicholasM95/terraform-modules.git//modules/static-website?ref=v1.25.14"
   domain_name             = "headoftp.com"
   sub_domain_name         = "@"
   project_name            = "headoftp-com"
